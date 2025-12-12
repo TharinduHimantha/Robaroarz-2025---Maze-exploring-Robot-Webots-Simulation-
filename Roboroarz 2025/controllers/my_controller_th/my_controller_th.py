@@ -25,9 +25,17 @@ rightMotor.setPosition(float('inf'))
 
 rightIR = robot.getDevice("ps2")
 leftIR = robot.getDevice("ps5")
+forward_IR1 = robot.getDevice("ps7")
+forward_IR2 = robot.getDevice("ps0")
 
 rightIR.enable(TIME_STEP)
 leftIR.enable(TIME_STEP)
+forward_IR1.enable(TIME_STEP)
+forward_IR2.enable(TIME_STEP)
+
+# sensor reading lookup table
+D = [0.00, 0.05, 0.10, 0.15, 0.20, 0.25]
+V = [4095, 3500, 2500, 1700, 1100, 700]
 
 camera = robot.getDevice("camera")
 camera.enable(TIME_STEP)
@@ -44,8 +52,8 @@ def motor_control(angle, Lspeed, Rspeed):
         Rspeed *= 0.4275
         pid_enable = True
 
-    leftMotor.setVelocity(Lspeed * MAX_SPEED * 0.5)
-    rightMotor.setVelocity(Rspeed * MAX_SPEED * 0.5)
+    leftMotor.setVelocity(Lspeed * MAX_SPEED)
+    rightMotor.setVelocity(Rspeed * MAX_SPEED)
    
     
     presentPosL = leftWheelSensor.getValue()
@@ -56,8 +64,8 @@ def motor_control(angle, Lspeed, Rspeed):
         eR = angle - abs(presentPosR - rightWheelSensor.getValue())
         if eL < 0.001 and eR < 0.001:
             break
-        if pid_enable == False:
-                print(f"left: {leftIR.getValue()} right: {rightIR.getValue()}")
+        # if pid_enable == False:
+                # print(f"left: {leftIR.getValue()} right: {rightIR.getValue()}")
 
     
    
@@ -111,25 +119,79 @@ def turn_right():
 def do_a_180():
     
     #delta_change = (0.026*math.pi)/0.0205
-    delta_change = (0.013*math.pi)/0.0205 + 0.07
+    delta_change = (2*0.013*math.pi)/0.0205 + 0.35
     motor_control(delta_change, 1, -1)
-    motor_control(delta_change, 1, -1)
+    # motor_control(delta_change, 1, -1)
     
+    
+    
+def forward_sensor_read():
+    print(f"forw0: {forward_IR1.getValue()} forw1: {forward_IR2.getValue()}")
+    if (forward_IR1.getValue() > 700) and (forward_IR2.getValue() > 700):
+        return 0
+    return 1
 
+def right_sensor_read():
+    print(f"right: {sensor_to_distance(rightIR.getValue())}")
+    if (rightIR.getValue()) > 700:
+        return 0
+    return 1
+  
+def left_sensor_read():
+    print(f"left: {sensor_to_distance(leftIR.getValue())}")
+    if (leftIR.getValue()) > 700:
+        return 0
+    return 1  
+    
+    
+    
+def sensor_to_distance(value):
+
+    # Find first V[i] < value
+    i = next(i for i in range(len(V)-1) if V[i] >= value >= V[i+1])
+
+    d1, v1 = D[i], V[i]
+    d2, v2 = D[i+1], V[i+1]
+
+    ratio = (value - v2) / (v1 - v2)
+    return d2 + ratio * (d1 - d2)
+    
+    
+    
+def wall_sensor_monitoring():
+
+    # assume returns false if blocked
+    left = left_sensor_read()
+    right = right_sensor_read()
+    forward = forward_sensor_read()
+   
+    if forward:
+        goForward()
+    elif left:
+        turn_left()
+        goForward()
+    elif right:
+        turn_right()
+        goForward()
+    else:
+        do_a_180()
+        goForward()
     
     
 while robot.step(TIME_STEP) != -1:
-    goForward()
+    # goForward()
     #print(Robot.getOrientation())
-    goForward()
-    goForward()
-    goForward()
-    goForward()
+    # goForward()
+    # goForward()
+    # goForward()
+    # goForward()
     
-    turn_left()
-    goForward()
-    turn_right()
-    goForward()
-    goForward()
-    do_a_180()
+    # turn_left()
+    # goForward()
+    # turn_right()
+    # goForward()
+    # goForward()
+    # do_a_180()
+    wall_sensor_monitoring()
+
     pass
