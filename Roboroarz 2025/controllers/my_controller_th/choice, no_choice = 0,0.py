@@ -44,6 +44,19 @@ rightWheelSensor.enable(TIME_STEP)
 leftMotor.setPosition(float('inf'))
 rightMotor.setPosition(float('inf'))
 
+rightIR = robot.getDevice("ps2")
+leftIR = robot.getDevice("ps5")
+forward_IR1 = robot.getDevice("ps7")
+forward_IR2 = robot.getDevice("ps0")
+
+rightIR.enable(TIME_STEP)
+leftIR.enable(TIME_STEP)
+forward_IR1.enable(TIME_STEP)
+forward_IR2.enable(TIME_STEP)
+
+# sensor reading lookup table
+D = [0.00, 0.05, 0.10, 0.15, 0.20, 0.25]
+V = [4095, 3500, 2500, 1700, 1100, 700]
 
 
 def main_loop():
@@ -92,6 +105,7 @@ def wall_sensor_monitoring():
 
     if (left or right or forward) == False:
         do_a_180()
+        motor_control(0,1,1)
     
 
 def update_graph(left, right, forward):
@@ -134,6 +148,36 @@ def update_graph(left, right, forward):
         if right : g.add_edge((current_cell_Row, current_cell_Col), (current_cell_Row + 1, current_cell_Col))
 
 
+
+def forward_sensor_read():
+    # print(f"forw0: {forward_IR1.getValue()} forw1: {forward_IR2.getValue()}")
+    if (forward_IR1.getValue() > 700) and (forward_IR2.getValue() > 700):
+        return 0
+    return 1
+
+def right_sensor_read():
+    # print(f"right: {sensor_to_distance(rightIR.getValue())}")
+    if (rightIR.getValue()) > 700:
+        return 0
+    return 1
+  
+def left_sensor_read():
+    # print(f"left: {sensor_to_distance(leftIR.getValue())}")
+    if (leftIR.getValue()) > 700:
+        return 0
+    return 1  
+
+
+def sensor_to_distance(value):
+
+    # Find first V[i] < value
+    i = next(i for i in range(len(V)-1) if V[i] >= value >= V[i+1])
+
+    d1, v1 = D[i], V[i]
+    d2, v2 = D[i+1], V[i+1]
+
+    ratio = (value - v2) / (v1 - v2)
+    return d2 + ratio * (d1 - d2)
 
 ###########################################################################################################
 '''
@@ -216,8 +260,7 @@ def do_a_180():
     '''
     code to do a 180 turn
     '''
-    delta_change = (0.013*math.pi)/0.0205 + 0.07
-    motor_control(delta_change, 1, -1)
+    delta_change = (2*0.013*math.pi)/0.0205 + 0.35
     motor_control(delta_change, 1, -1)
 
     current_orientation = (current_orientation + 2) % 4
