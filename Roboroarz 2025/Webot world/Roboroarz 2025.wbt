@@ -1,0 +1,390 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Roughcast.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.4305555038771109 0.48905313515031057 0.7585835412667343 1.89441361842103
+  position 0.32417907507979166 -3.256917485193295 5.977111831140373
+  follow "e-puck"
+  followType "None"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 3 3
+}
+DEF START_LABEL Solid {
+  translation 1.38 -1.38 0.01
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "Start.png"
+          ]
+        }
+      }
+      geometry Plane {
+        size 0.16 0.16
+      }
+    }
+  ]
+}
+Wall {
+  translation -0.640003 -0.485 0
+  rotation 0 0 1 1.5708
+  name "wall(44)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 10
+  }
+}
+Wall {
+  translation -0.6 -1.245 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(43)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 20
+  }
+}
+Wall {
+  translation -0.51 0.375 0
+  rotation 0 0 1 1.01503e-06
+  name "wall(41)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 20
+  }
+}
+Wall {
+  translation -0.1 1.235 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(40)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 10
+  }
+}
+Wall {
+  translation 1 -1.125 0
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 1.125 0.5 0
+  name "wall(20)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation 0.875 -0.25 0
+  name "wall(24)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation 0.625 0.25 0
+  name "wall(27)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation 0.875 -0.75 0
+  name "wall(25)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -0.125 -0.75 0
+  name "wall(30)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -1.125 -0.75 0
+  name "wall(36)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -0.725 -1.24 0
+  name "wall(39)"
+  size 0.45 0.01 0.1
+}
+Wall {
+  translation 0.235 -1.24 0
+  name "wall(54)"
+  size 0.47 0.01 0.1
+}
+Wall {
+  translation 1.365 0.01 0
+  name "wall(47)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -1.365 -1 0
+  name "wall(45)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -1.125 -0.5 0
+  name "wall(37)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -1.125 0.75 0
+  name "wall(38)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -0.375 -0.25 0
+  name "wall(32)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation -0.25 0.25 0
+  name "wall(33)"
+  size 0.5 0.01 0.1
+}
+Wall {
+  translation -0.5 0.75 0
+  name "wall(31)"
+  size 0.5 0.01 0.1
+}
+Wall {
+  translation -0.75 0.5 0
+  name "wall(34)"
+  size 0.5 0.01 0.1
+}
+Wall {
+  translation -1 0.25 0
+  name "wall(35)"
+  size 0.5 0.01 0.1
+}
+Wall {
+  translation 1.125 1 0
+  name "wall(22)"
+  size 0.25 0.01 0.1
+}
+Wall {
+  translation 0.5 0.75 0
+  name "wall(23)"
+  size 1 0.01 0.1
+}
+Wall {
+  translation 0.26 -1 0
+  name "wall(26)"
+  size 1 0.01 0.1
+}
+Wall {
+  name "wall(21)"
+  size 0.5 0.01 0.1
+}
+Wall {
+  translation -0.125 -0.5 0
+  name "wall(29)"
+  size 1.25 0.01 0.1
+}
+Wall {
+  translation 0.125 0.5 0
+  name "wall(28)"
+  size 0.75 0.01 0.1
+}
+Wall {
+  translation 1.14 0.495 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(42)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 10
+  }
+}
+Wall {
+  translation 0.76 0.115 0
+  rotation 0 0 1 1.01503e-06
+  name "wall(50)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 10
+  }
+}
+Wall {
+  translation -1.11 1.285 0
+  rotation 0 0 1 -1.5707953071795862
+  name "wall(48)"
+  size 0.01 0.2 0.1
+  appearance Roughcast {
+    colorOverride 0 1 0
+    textureTransform TextureTransform {
+      scale 2.4 1
+    }
+    IBLStrength 10
+  }
+}
+Wall {
+  translation 1 -0.125 0
+  name "wall(19)"
+  size 0.01 1.25 0.1
+}
+Wall {
+  translation 1.25 -0.875 0
+  name "wall(46)"
+  size 0.01 1.25 0.1
+}
+Wall {
+  translation 1.25 0.755 0
+  name "wall(49)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.769999 1.255 0.02
+  rotation 0 0 1 1.5708
+  name "wall(52)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation -0.740001 1.255 0.02
+  rotation 0 0 1 1.5708
+  name "wall(53)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.25 -0.875 0
+  name "wall(12)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.25 0.875 0
+  name "wall(14)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.5 1.125 0
+  name "wall(15)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.12 1.245 0
+  rotation 0 0 1 1.5708
+  name "wall(51)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation 0.25 0.125 0
+  name "wall(13)"
+  size 0.01 0.75 0.1
+}
+Wall {
+  translation -0.25 -0.125 0
+  name "wall(2)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.75 0.875 0
+  name "wall(7)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -1 0.875 0
+  name "wall(8)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.5 1.125 0
+  name "wall(4)"
+  size 0.01 0.25 0.1
+}
+Wall {
+  translation -0.5 -1 0
+  name "wall(1)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -0.75 -0.5 0
+  name "wall(5)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.5 -0.25 0
+  name "wall(16)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation 0.75 0.5 0
+  name "wall(17)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation -0.25 0.75 0
+  name "wall(9)"
+  size 0.01 1 0.1
+}
+Wall {
+  translation -0.5 0.25 0
+  name "wall(3)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0 1 0
+  name "wall(10)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0 -0.5 0
+  name "wall(11)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation 0.75 -0.75 0
+  name "wall(18)"
+  size 0.01 0.5 0.1
+}
+Wall {
+  translation -1 0 0
+  name "wall(6)"
+  size 0.01 0.5 0.1
+}
+E-puck {
+  hidden position_0_0 -9.28935414175886e-08
+  hidden position_0_1 -9.289371095101699e-08
+  hidden rotation_1 0 -1 0 3.0468044609426577
+  hidden rotation_2 0 -1 0 4.0277115027131725
+  translation 1.383800000007531 -1.3751200002980177 -6.39619956025704e-05
+  rotation -1.1252731416504118e-09 -8.42827889721821e-10 1 1.5956248921088074
+  controller "my_controller_th"
+  controllerArgs [
+    ""
+  ]
+  camera_fieldOfView 2.2
+  camera_width 80
+}
