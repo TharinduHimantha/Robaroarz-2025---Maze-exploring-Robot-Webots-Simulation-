@@ -1,1 +1,1 @@
-#This foldervcontains testing files and component-level code
+#This folder contains testing files and component-level codes
