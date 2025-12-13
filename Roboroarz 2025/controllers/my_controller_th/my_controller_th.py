@@ -4,7 +4,7 @@ import math
 
 TIME_STEP = 32
 
-MAX_SPEED = 6.28
+MAX_SPEED = 6.1
 
 
 # create the Robot instance.
@@ -33,24 +33,38 @@ leftIR.enable(TIME_STEP)
 forward_IR1.enable(TIME_STEP)
 forward_IR2.enable(TIME_STEP)
 
+ir_array = [robot.getDevice("ps6"),
+                robot.getDevice("ps1"),
+                robot.getDevice("ps4"),
+                robot.getDevice("ps3")]
+                
+for sensor in ir_array:
+    sensor.enable(TIME_STEP)
+
 # sensor reading lookup table
 D = [0.00, 0.05, 0.10, 0.15, 0.20, 0.25]
 V = [4095, 3500, 2500, 1700, 1100, 700]
+
+Kp = 3.0
+Kd = 0.0
+prev_err = 0.0
 
 camera = robot.getDevice("camera")
 camera.enable(TIME_STEP)
 #original FOV = 0.84
 # new Fov = 2.2
 # original camera 52,39
+# wall height 0.0495-0.033
+# dist to wall = 0.164
 
 def motor_control(angle, Lspeed, Rspeed):
 
-    pid_enable = False
+    pid_enable = True
 
     if angle < 5  :
         Lspeed *= 0.4275
         Rspeed *= 0.4275
-        pid_enable = True
+        pid_enable = False
 
     leftMotor.setVelocity(Lspeed * MAX_SPEED)
     rightMotor.setVelocity(Rspeed * MAX_SPEED)
@@ -60,14 +74,14 @@ def motor_control(angle, Lspeed, Rspeed):
     presentPosR = rightWheelSensor.getValue()
     
     while robot.step(TIME_STEP) != -1:
+        if pid_enable:
+            pid_controller()
         eL = angle - abs(presentPosL - leftWheelSensor.getValue())
         eR = angle - abs(presentPosR - rightWheelSensor.getValue())
         if eL < 0.001 and eR < 0.001:
-            break
-        # if pid_enable == False:
-                # print(f"left: {leftIR.getValue()} right: {rightIR.getValue()}")
+            break                
 
-    
+
    
 def goForward():
 
@@ -103,7 +117,7 @@ def turn_left():
     # leftMotor.setVelocity(-0.75 * MAX_SPEED)
     # rightMotor.setVelocity(0.75 * MAX_SPEED)
     
-    delta_change = (0.013*math.pi)/0.0205 + 0.07
+    delta_change = (0.013*math.pi)/0.0205 + 0.2
     motor_control(delta_change, -1, 1)
     print("turning left")
     
@@ -111,7 +125,7 @@ def turn_left():
 
 def turn_right():
 
-    delta_change = (0.013*math.pi)/0.0205 + 0.07
+    delta_change = (0.013*math.pi)/0.0205 + 0.2
     motor_control(delta_change, 1, -1)
     
 
@@ -146,7 +160,7 @@ def left_sensor_read():
     
     
 def sensor_to_distance(value):
-
+    
     # Find first V[i] < value
     i = next(i for i in range(len(V)-1) if V[i] >= value >= V[i+1])
 
@@ -154,9 +168,98 @@ def sensor_to_distance(value):
     d2, v2 = D[i+1], V[i+1]
 
     ratio = (value - v2) / (v1 - v2)
-    return d2 + ratio * (d1 - d2)
+    return_val = d2 + ratio * (d1 - d2)
+    
+    return return_val * math.cos(math.asin(0.0165/0.164))
+    
+
+
+def pid_controller():
+                
+    left = leftIR.getValue()
+    right = rightIR.getValue()
+    
+    if left == 700 and right == 700:
+        left = 0.094
+        
+    elif left != 700 and right != 700:
+    
+        print(f"Left sensor read: {left}")
+       
     
     
+        print(dist_to_left(left, 0))
+        left = sensor_to_distance(left)
+        print(f"Real world left = {left}")
+        right = sensor_to_distance(right)
+        
+        left *= (0.188 / (left + right) )
+        
+        
+    elif left != 700:
+        left = dist_to_left(left, 0)
+        
+    else:
+        left = (0.188 - dist_to_left(right, 1))
+        
+        
+    error = left - 0.094
+    correction = Kp * error
+    global prev_error
+    prev_error = error
+    if abs(correction) > 0.18:
+        correction *= (0.18 / abs(correction))
+    print(f"dist: {left}, correction : {correction}")
+        
+    # else:
+        
+        # left = sensor_to_distance(left)
+        # right = sensor_to_distance(right)
+        
+        # left *= (0.188 / (left + right) )
+        
+        # error = left - 0.094
+        # correction = Kp * error
+        # prev_error = error
+        # print(f"dist: {left}, correction : {correction}")
+
+    leftMotor.setVelocity(MAX_SPEED - correction)
+    rightMotor.setVelocity(MAX_SPEED + correction)
+    
+
+
+def dist_to_left(value, index):
+    print("This is dist_to_left")
+    
+    value = sensor_to_distance(value)
+    print(f"value : {value}")
+    
+    other_read = ir_array[index].getValue()
+    print(f"other_read: {other_read}")
+    
+    if other_read < 1360:
+        other_read = ir_array[index + 2].getValue()
+        print(f"new other_read: {other_read}")
+        if other_read < 1360:
+            return value*math.cos(0.26)
+        
+        other_read = sensor_to_distance(other_read)
+        print(f"other_read distance: {other_read}")
+        
+        angle = 0.577 * ( 1 - ((2*(value+0.031))/(other_read+0.031)))
+        print(f"angle {angle}")
+        
+        return (value+0.031) * math.cos(math.atan(angle)) - 0.031
+    
+    other_read = ir_array[index].getValue()
+    angle = ((1.414 * (value+0.031))/(other_read+0.031)) - 1
+        
+    return (value+0.031) * math.cos(math.atan(angle)) - 0.031
+    
+
+
+
+   
     
 def wall_sensor_monitoring():
 
