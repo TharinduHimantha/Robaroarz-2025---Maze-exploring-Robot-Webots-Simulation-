@@ -1,5 +1,6 @@
 choice, no_choice = 0,0
 
+
 from collections import deque
 navigation_path = deque()
 
@@ -485,6 +486,7 @@ class Graph:
 # print("Neighbors of (0,0):", g.neighbors((0, 0)))
 
 # path = g.bfs_until_zero((2,2))
+
 
 
       
