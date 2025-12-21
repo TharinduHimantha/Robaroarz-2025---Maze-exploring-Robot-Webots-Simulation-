@@ -361,9 +361,11 @@ def check_for_green():
     # -------------------------------
     # Define regions of interest
     regions = [
-        frame[:, : (9 * w) // 100],
+        frame[(15 * h) // 20 :, : (9 * w) // 100],
+        frame[ : (10 * h) // 20, : (9 * w) // 100],
         frame[: ((5 * h) // 20), ((42 * w) // 100) : ((59 * w) // 100)],
-        frame[:, (91 * w) // 100 :]
+        frame[ : (10 * h) // 20, (91 * w) // 100 :],
+        frame[ (15 * h) // 20 :, (91 * w) // 100 :]
     ]
 
     green_is_Notpresent = []
@@ -386,17 +388,22 @@ def check_for_green():
         ratio = color_pixels / mask.size
 
         if ratio > DETECTION_RATIO:
-            print(f"[DETECTED] Color in (ratio={ratio:.3f})")
-            flash_led(1)
             green_is_Notpresent.append(0)
-            update_destination()
             
         else:
             green_is_Notpresent.append(1)
             
     # cv2.imshow("Webots Camera", frame)
-    # cv2.waitKey(1)
-    return green_is_Notpresent
+    # cv2.waitKey(1)    
+    a = green_is_Notpresent[0] or green_is_Notpresent[1]
+    b = green_is_Notpresent[2]
+    c = green_is_Notpresent[3] or green_is_Notpresent[4]
+    
+    if (a and b and c) == 0:
+        flash_led(1)
+        update_destination()
+         
+    return [a, b, c]
 
 
 ###########################################################################################################
@@ -571,7 +578,8 @@ def pid_controller():
     prev_error = error
     
     if int(robot.getTime() * 1000) % 320 == 0:
-         print(f"Err: {error:.3f} | P: {P:.2f} D: {D:.2f} | Corr: {correction:.2f}")
+         #print(f"Err: {error:.3f} | P: {P:.2f} D: {D:.2f} | Corr: {correction:.2f}")
+         pass
 
     if correction > 0.18: correction = 0.18
     if correction < -0.18: correction = -0.18
@@ -619,6 +627,8 @@ def flash_led(state):
 def update_destination():
     global final_dest_Row
     global final_dest_Col
+    
+    print(f"[DETECTED] Color in ({current_cell_Row}, {current_cell_Col})")
 
     final_dest_Row += current_cell_Row
     final_dest_Col += current_cell_Col
